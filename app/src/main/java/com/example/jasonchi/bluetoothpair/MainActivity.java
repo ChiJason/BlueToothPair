@@ -33,9 +33,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void init() {
         b1 = (Button) findViewById(R.id.button);
-        b2=(Button)findViewById(R.id.button2);
-        b3=(Button)findViewById(R.id.button3);
-        b4=(Button)findViewById(R.id.button4);
+        b2= (Button)findViewById(R.id.button2);
+        b3= (Button)findViewById(R.id.button3);
+        b4= (Button)findViewById(R.id.button4);
+
+        b1.setOnClickListener(this);
+        b2.setOnClickListener(this);
+        b3.setOnClickListener(this);
+        b4.setOnClickListener(this);
 
         BA = BluetoothAdapter.getDefaultAdapter();
         lv = (ListView)findViewById(R.id.listView);
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void off(){
         BA.disable();
         Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
+        finish();
     }
 
 
@@ -68,7 +74,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ArrayList list = new ArrayList();
 
-        for(BluetoothDevice bt : pairedDevices) list.add(bt.getName());
+        for(BluetoothDevice bt : pairedDevices){
+            list.add(bt.getName());
+        }
+
         Toast.makeText(getApplicationContext(), "Showing Paired Devices",Toast.LENGTH_SHORT).show();
 
         final ArrayAdapter adapter = new  ArrayAdapter(this,android.R.layout.simple_list_item_1, list);
@@ -83,13 +92,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 on();
                 break;
             case R.id.button2:
-                off();
-                break;
-            case R.id.button3:
                 visible();
                 break;
-            case R.id.button4:
+            case R.id.button3:
                 list();
+                break;
+            case R.id.button4:
+                off();
                 break;
             default:
                 break;
