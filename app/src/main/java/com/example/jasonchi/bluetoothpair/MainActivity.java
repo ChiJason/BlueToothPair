@@ -2,16 +2,25 @@ package com.example.jasonchi.bluetoothpair;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.os.ParcelUuid;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -20,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BluetoothAdapter BA;
     private Set<BluetoothDevice> pairedDevices;
     ListView lv;
-
+    String sendResult;
+    OutputStream outputStream;
+    InputStream inputStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +40,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         init();
 
+        Intent intent = getIntent();
+        Double amount = intent.getDoubleExtra("amount", 0);
+        String receiptno = intent.getStringExtra("receiptno");
+        Boolean isDemo = intent.getBooleanExtra("demo", false);
+
+        sendResult = "No. " + receiptno + " Amount: " + amount + " demo: " + isDemo;
     }
 
     public void init() {
@@ -44,6 +61,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         BA = BluetoothAdapter.getDefaultAdapter();
         lv = (ListView)findViewById(R.id.listView);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ArrayList list = new ArrayList(pairedDevices);
+                BluetoothDevice bt = (BluetoothDevice) list.get(position);
+                ParcelUuid[] uuids = bt.getUuids();
+                try{
+                    BluetoothSocket socket = bt.createInsecureRfcommSocketToServiceRecord(uuids[0].getUuid());
+                    socket.connect();
+                    outputStream = socket.getOutputStream();
+                    inputStream = socket.getInputStream();
+
+                    outputStream.write("Hi, this is test".getBytes());
+
+                }catch (IOException e){
+
+                }
+
+            }
+        });
     }
 
     public void on(){
@@ -59,7 +96,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void off(){
         BA.disable();
         Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
-        finish();
+//
+//        Intent intent = new Intent();
+//        Bundle  b = new Bundle();
+//        b.putString("BACK_STRING", sendResult);
+//        intent.putExtras(b);
+//        MainActivity.this.setResult(RESULT_OK, intent);
+//        finish();
     }
 
 

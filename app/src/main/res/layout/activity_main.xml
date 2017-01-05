@@ -40,12 +40,6 @@
 
     </LinearLayout>
 
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,5 +47,10 @@
         android:id="@+id/textView2"
         android:textColor="#ff34ff06"
         android:textSize="25dp" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView" />
 
 </LinearLayout>
